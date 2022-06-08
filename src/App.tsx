@@ -36,7 +36,7 @@ export const App = () => {
         }
 
     };
-//перезагрузка счетчика
+//перезагрузка счетчик
     const reset = () => {
         // setCount(startCount);
         // setIncrIncDisable(false);
