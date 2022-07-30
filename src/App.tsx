@@ -6,88 +6,105 @@ import {Button} from "./Button";
 import {useDispatch, useSelector} from "react-redux";
 import {
     CountType,
-    increaseCountAC,
-    resetIncrIncDisableAC,
-    resetSetCountAC,
-    setIncrIncDisableAC,
+    increaseCountAC, resetDisableAC,
+    resetSetCountAC, SetCountAC, SetErrorTextAC,
+    setIncrIncDisableAC, SetMaxCountAC, setSaveDisableAC,
     setStartCountAC
 } from "./store/countReucer";
 import {rootReducerType} from "./store/store";
 
-//остановился на 49 строке. возможно дублирование крейторов
+
 export const App = () => {
 
     // let [count, setCount] = useState<number>(0);
     // let [startCount, setStartCount] = useState<number>(0);
-    let [maxCount, SetMaxCount] = useState<number>(0);
+    // let [maxCount, SetMaxCount] = useState<number>(0);
     // let [incDisable, setIncrIncDisable] = useState<boolean>(false);
-    let [setDisable, setSaverDisable] = useState<boolean>(true);
-    let [error, setError] = useState("");
-    let [resDisable, setResetDisable] = useState<boolean>(false);
+    // let [setDisable, setSaverDisable] = useState<boolean>(true);
+    // let [error, setError] = useState("");
 
-    let count = useSelector<rootReducerType, CountType>(state=>state.count)
+
+    let count = useSelector<rootReducerType, number>(state => state.count.count);
+    let maxCount = useSelector<rootReducerType, number>(state => state.count.maxCount);
+    let startCount = useSelector<rootReducerType, number>(state => state.count.startCount);
+    let error = useSelector<rootReducerType, string>(state => state.count.error);
+    let incDisable = useSelector<rootReducerType, boolean>(state => state.count.incDisable);
+    let resDisable = useSelector<rootReducerType, boolean>(state => state.count.resDisable);
+    let setDisable = useSelector<rootReducerType, boolean>(state => state.count.setDisable);
+
+
     let dispatch = useDispatch()
 
     const increment = () => {
-        dispatch(increaseCountAC())
-        if (count.count >= count.maxCount) {
+
+        if (count >= maxCount) {
             // setIncrIncDisable(true)
-            dispatch(setIncrIncDisableAC())
+            dispatch(setIncrIncDisableAC(true))
+
+        } else {
+            dispatch(increaseCountAC())
         }
 
     };
 //перезагрузка счетчик
     const reset = () => {
-        // setCount(startCount);
-        // setIncrIncDisable(false);
         dispatch(resetSetCountAC())
-        dispatch(resetIncrIncDisableAC())
+        dispatch(setIncrIncDisableAC(false))
 
 
     };
 
     const itemForStartCounter = (value: number) => {
-        // setStartCount(value)
-        //
-        // if (value) {
-        //     setSaverDisable(false)
-        //
-        // }
-        // if (value) {
-        //     setResetDisable(true)
-        //
-        // }
-        // if (value) {
-        //     setError("Введите число")
-        //     if (value < 0 || (value === maxCount && value != 0)) {
-        //         setError("Ошибка")
-        //     }
-        //
-        // }
+
         dispatch(setStartCountAC(value))
+        //
+        if (value) {
+            dispatch(setSaveDisableAC(false))
+        }
+        if (value) {
+            dispatch(resetDisableAC(true))
+
+
+        }
+
+        if (value || value === 0) {
+            dispatch(SetErrorTextAC("Введите число"))
+            dispatch(setSaveDisableAC(false))
+            dispatch(setIncrIncDisableAC(false))
+            if (value < 0 || (value === maxCount) || value > maxCount) {
+                dispatch(SetErrorTextAC("Ошибка"))
+                dispatch(setSaveDisableAC(true))
+                dispatch(setIncrIncDisableAC(true))
+
+            }
+
+        }
     }
     const itemForMaxtCounter = (value: number) => {
 
+        dispatch(SetMaxCountAC(value))
+        if (value) {
+            dispatch(setSaveDisableAC(false))
+        }
+        if (value) {
+            dispatch(resetDisableAC(true))
 
-        // SetMaxCount(value)
-        // if (value) {
-        //     setSaverDisable(false)
-        // }
-        // if (value) {
-        //     setResetDisable(true)
-        //
-        // }
-        //
-        // if (value) {
-        //     setError("Введите число")
-        //     if (value < 0 || (value === startCount && value != 0)) {
-        //         setError("Ошибка")
-        //     }
-        //
-        //
-        // }
+        }
+
+        if (value) {
+
+            dispatch(SetErrorTextAC("Введите число"))
+            dispatch(setSaveDisableAC(false))
+            dispatch(setIncrIncDisableAC(false))
+            if (value < 0 || (value === startCount ) || value < startCount && value != 0) {
+                dispatch(SetErrorTextAC("Ошибка"))
+                dispatch(setSaveDisableAC(true))
+                dispatch(setIncrIncDisableAC(true))
+            }
+
+
+        }
     }
-
 
 
     // useEffect(() => {
@@ -100,31 +117,30 @@ export const App = () => {
     // }, []);
 
 
-
-
     const forSet = () => {
-        // setCount(startCount)
-        // setError("")
-        // setSaverDisable(true);
-        // setResetDisable(false);
+        dispatch(SetCountAC(startCount))
+        dispatch(SetErrorTextAC(""))
+        dispatch(setSaveDisableAC(true))
+        dispatch(resetDisableAC(false))
+
         // localStorage.setItem("counterValueStart", JSON.stringify(startCount));
         // localStorage.setItem("counterValueMax", JSON.stringify(maxCount));
     }
 
 
     // if (startCount < 0 || maxCount < 0 || startCount > maxCount || startCount === maxCount) {
-    //     setDisable = (true)
+    //     dispatch(setSaveDisableAC(true))
     // }
     return (
         <div>
-            <Count maxCount={maxCount} count={count.count}
+            <Count maxCount={maxCount} count={count}
                    error={error}
 
             />
-            <Button disable={count.incDisable} callback={increment} buttonName={"inc"}/>
+            <Button disable={incDisable} callback={increment} buttonName={"inc"}/>
             <Button disable={resDisable} callback={reset} buttonName={"reset"}/>
             <CountSettings itemForStartCounter={itemForStartCounter}
-                           startCount={count.startCount}
+                           startCount={startCount}
                            maxCount={maxCount}
                            itemForMaxtCounter={itemForMaxtCounter}
 
