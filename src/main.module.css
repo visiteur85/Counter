@@ -1,0 +1,9 @@
+.main {
+background-color: cadetblue;
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+    border: 1px solid darkorange;
+    padding: 5px;
+}

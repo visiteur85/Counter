@@ -1,28 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import {Count} from "./Count";
 import {CountSettings} from "./CountSetings";
 import {Button} from "./Button";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    CountType,
     increaseCountAC, resetDisableAC,
     resetSetCountAC, SetCountAC, SetErrorTextAC,
     setIncrIncDisableAC, SetMaxCountAC, setSaveDisableAC,
     setStartCountAC
 } from "./store/countReucer";
 import {rootReducerType} from "./store/store";
+import style from "../src/main.module.css"
 
 
 export const App = () => {
-
-    // let [count, setCount] = useState<number>(0);
-    // let [startCount, setStartCount] = useState<number>(0);
-    // let [maxCount, SetMaxCount] = useState<number>(0);
-    // let [incDisable, setIncrIncDisable] = useState<boolean>(false);
-    // let [setDisable, setSaverDisable] = useState<boolean>(true);
-    // let [error, setError] = useState("");
-
 
     let count = useSelector<rootReducerType, number>(state => state.count.count);
     let maxCount = useSelector<rootReducerType, number>(state => state.count.maxCount);
@@ -132,7 +124,7 @@ export const App = () => {
     //     dispatch(setSaveDisableAC(true))
     // }
     return (
-        <div>
+        <div className={style.main}>
             <Count maxCount={maxCount} count={count}
                    error={error}
 
